@@ -14,8 +14,9 @@ export function Calendar({ month, year = new Date().getFullYear(), availableDate
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
 
   // 在客户端初始化当前日期
+  const now = new Date();
   useEffect(() => {
-    setCurrentDate(new Date())
+    setCurrentDate(now.getTime() + 8 * 60 * 60 * 1000)
   }, [])
 
   // 获取月份中的天数

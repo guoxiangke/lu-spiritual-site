@@ -121,7 +121,7 @@ export default async function DayPage({
         <main className="container py-10">
           <div className="mx-auto max-w-3xl">
             <h1 className="mb-8 text-center text-2xl font-medium">
-              2025卢牧师带你读新约 {month}月{day}日 {devotionalItem.title ? `—— ${devotionalItem.title}` : ""}
+              2025卢牧师带你读新约 {month}月{day}日 {devotionalItem.title ? `<br/>${devotionalItem.title}` : ""}
             </h1>
 
             {/* 视频播放器 */}
