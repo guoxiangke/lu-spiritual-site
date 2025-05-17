@@ -21,7 +21,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/devotional',
+        source: '/api-data',
         destination: 'https://r2share.simai.life/luNT.json',
       },
     ]

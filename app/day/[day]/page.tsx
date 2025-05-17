@@ -70,8 +70,10 @@ export default async function DayPage({
   }
 
   try {
+    console.log(`开始获取${dateStr}日期的内容`)
     // 获取当天的灵修内容
     const devotionalItem = await getDevotionalItem(dateStr)
+    console.log(`成功获取${dateStr}日期的内容:`, devotionalItem ? "有数据" : "无数据")
 
     // 如果没有找到内容
     if (!devotionalItem) {
@@ -198,6 +200,9 @@ export default async function DayPage({
             <div className="rounded-lg border bg-card p-6 shadow-sm text-center">
               <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
               <p className="mb-4">获取内容时出错，请稍后再试。</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                错误详情: {error instanceof Error ? error.message : String(error)}
+              </p>
               <div className="mt-4 flex justify-center">
                 <Link href="/">
                   <Button>返回首页</Button>
