@@ -19,25 +19,39 @@ export function MonthSelector({ currentMonth, onMonthChange }: MonthSelectorProp
   }
 
   return (
-    <div className="mb-6 flex items-center justify-center gap-4">
-      <Button variant="outline" size="icon" onClick={handlePrevMonth} aria-label="上个月">
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
-      <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
+    <div className="mb-6 flex items-center justify-center">
+      {/* 确保左箭头按钮始终可见 */}
+      <button
+        type="button"
+        onClick={handlePrevMonth}
+        className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md border border-input bg-background text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
+        aria-label="上个月"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+
+      <div className="flex gap-1 overflow-x-auto py-2 scrollbar-hide mx-1 sm:mx-2 md:mx-4">
         {months.map((month, index) => (
           <Button
             key={month}
             variant={currentMonth === index + 1 ? "default" : "ghost"}
-            className={`min-w-16 ${currentMonth === index + 1 ? "bg-primary text-primary-foreground" : ""}`}
+            className={`min-w-12 sm:min-w-16 ${currentMonth === index + 1 ? "bg-primary text-primary-foreground" : ""}`}
             onClick={() => onMonthChange(index + 1)}
           >
             {month}
           </Button>
         ))}
       </div>
-      <Button variant="outline" size="icon" onClick={handleNextMonth} aria-label="下个月">
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+
+      {/* 确保右箭头按钮始终可见 */}
+      <button
+        type="button"
+        onClick={handleNextMonth}
+        className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md border border-input bg-background text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
+        aria-label="下个月"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
     </div>
   )
 }

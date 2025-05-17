@@ -4,6 +4,7 @@ import { ArrowLeft, AlertCircle } from "lucide-react"
 import { notFound } from "next/navigation"
 import { getDevotionalItem } from "@/lib/get-devotional-items"
 import Image from "next/image"
+import { getUTC8DateOnly, getCurrentDateMMDD } from "@/lib/date-utils"
 
 export default async function DayPage({
   params,
@@ -38,10 +39,20 @@ export default async function DayPage({
   ]
   const monthName = monthNames[month - 1]
 
-  // 检查是否是未来日期
-  const now = new Date()
-  const dateToCheck = new Date(now.getFullYear(), month - 1, day)
-  if (dateToCheck > now) {
+  // 获取当前日期（UTC+8）
+  const utc8Today = getUTC8DateOnly()
+  const currentDateMMDD = getCurrentDateMMDD()
+
+  // 创建要检查的日期对象
+  const currentYear = utc8Today.getFullYear()
+  const dateToCheck = new Date(currentYear, month - 1, day)
+
+  // 严格检查：如果请求的日期大于当前日期，则显示未来日期信息
+  if (dateToCheck > utc8Today) {
+    console.log(
+      `请求的日期 ${month}月${day}日 大于当前日期 ${utc8Today.getMonth() + 1}月${utc8Today.getDate()}日，显示未来日期信息`,
+    )
+
     // 未来日期显示特殊信息
     return (
       <div className="min-h-screen bg-background">
@@ -62,6 +73,14 @@ export default async function DayPage({
             </h1>
             <div className="rounded-lg border bg-card p-6 shadow-sm">
               <p className="text-center">未来日期的内容尚未发布，请耐心等待。</p>
+              <p className="mt-4 text-center text-muted-foreground">
+                当前日期: {utc8Today.getMonth() + 1}月{utc8Today.getDate()}日 (UTC+8)
+              </p>
+              <div className="mt-6 flex justify-center">
+                <Link href={`/day/${currentDateMMDD}`}>
+                  <Button>查看今日内容</Button>
+                </Link>
+              </div>
             </div>
           </div>
         </main>
@@ -121,7 +140,7 @@ export default async function DayPage({
         <main className="container py-10">
           <div className="mx-auto max-w-3xl">
             <h1 className="mb-8 text-center text-2xl font-medium">
-              2025卢牧师带你读新约 {month}月{day}日 {devotionalItem.title ? `<br/>${devotionalItem.title}` : ""}
+              2025卢牧师带你读新约 {month}月{day}日 {devotionalItem.title ? `—— ${devotionalItem.title}` : ""}
             </h1>
 
             {/* 视频播放器 */}

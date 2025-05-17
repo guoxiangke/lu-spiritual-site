@@ -85,3 +85,25 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* 确保按钮在所有环境中都有正确的样式 */
+button {
+  cursor: pointer;
+}
+
+/* 确保月份选择器中的按钮有足够的点击区域 */
+.month-selector-button {
+  min-height: 40px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 确保按钮在移动设备上有足够的点击区域 */
+@media (max-width: 640px) {
+  .month-nav-button {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}

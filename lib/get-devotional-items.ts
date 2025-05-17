@@ -96,7 +96,34 @@ async function fetchDevotionalData(): Promise<DevotionalItems> {
 export async function getDevotionalItems(): Promise<DevotionalItems> {
   try {
     // 从API获取数据
-    return await fetchDevotionalData()
+    const allItems = await fetchDevotionalData()
+
+    // 获取当前日期（UTC+8）
+    const now = new Date()
+    const utcTime = now.getTime()
+    const localTimezoneOffset = now.getTimezoneOffset()
+    const utc8TimezoneOffset = -480
+    const offsetMillis = (localTimezoneOffset - utc8TimezoneOffset) * 60 * 1000
+    const utc8Time = utcTime + offsetMillis
+    const utc8Now = new Date(utc8Time)
+
+    // 创建当前日期的MMDD格式
+    const currentMonth = utc8Now.getMonth() + 1
+    const currentDay = utc8Now.getDate()
+    const currentMMDD = `${currentMonth.toString().padStart(2, "0")}${currentDay.toString().padStart(2, "0")}`
+
+    // 过滤出当前日期及之前的内容
+    const filteredItems: DevotionalItems = {}
+
+    for (const [dateStr, item] of Object.entries(allItems)) {
+      // 比较日期字符串，只保留小于等于当前日期的内容
+      if (dateStr <= currentMMDD) {
+        filteredItems[dateStr] = item
+      }
+    }
+
+    console.log(`过滤后的内容数量: ${Object.keys(filteredItems).length}，当前日期: ${currentMMDD}`)
+    return filteredItems
   } catch (error) {
     console.error("处理灵修数据失败:", error)
     // 出错时返回备用数据
@@ -107,6 +134,26 @@ export async function getDevotionalItems(): Promise<DevotionalItems> {
 // 获取特定日期的灵修内容
 export async function getDevotionalItem(dateStr: string): Promise<DevotionalItem | null> {
   try {
+    // 获取当前日期（UTC+8）
+    const now = new Date()
+    const utcTime = now.getTime()
+    const localTimezoneOffset = now.getTimezoneOffset()
+    const utc8TimezoneOffset = -480
+    const offsetMillis = (localTimezoneOffset - utc8TimezoneOffset) * 60 * 1000
+    const utc8Time = utcTime + offsetMillis
+    const utc8Now = new Date(utc8Time)
+
+    // 创建当前日期的MMDD格式
+    const currentMonth = utc8Now.getMonth() + 1
+    const currentDay = utc8Now.getDate()
+    const currentMMDD = `${currentMonth.toString().padStart(2, "0")}${currentDay.toString().padStart(2, "0")}`
+
+    // 如果请求的日期大于当前日期，返回null
+    if (dateStr > currentMMDD) {
+      console.log(`请求的日期 ${dateStr} 大于当前日期 ${currentMMDD}，返回null`)
+      return null
+    }
+
     const items = await getDevotionalItems()
 
     // 如果找到了特定日期的内容，返回它
@@ -114,16 +161,9 @@ export async function getDevotionalItem(dateStr: string): Promise<DevotionalItem
       return items[dateStr]
     }
 
-    // 检查是否是未来日期
-    const now = new Date()
+    // 解析月份和日期
     const month = Number.parseInt(dateStr.substring(0, 2))
     const day = Number.parseInt(dateStr.substring(2, 4))
-    const dateToCheck = new Date(now.getFullYear(), month - 1, day)
-
-    // 如果是未来日期，返回null（表示没有数据）
-    if (dateToCheck > now) {
-      return null
-    }
 
     // 如果是过去或当前日期但没有数据，返回备用数据
     if (fallbackData[dateStr]) {
@@ -158,6 +198,25 @@ export async function getDevotionalItem(dateStr: string): Promise<DevotionalItem
 // 检查日期是否有灵修内容
 export async function hasDevotionalContent(dateStr: string): Promise<boolean> {
   try {
+    // 获取当前日期（UTC+8）
+    const now = new Date()
+    const utcTime = now.getTime()
+    const localTimezoneOffset = now.getTimezoneOffset()
+    const utc8TimezoneOffset = -480
+    const offsetMillis = (localTimezoneOffset - utc8TimezoneOffset) * 60 * 1000
+    const utc8Time = utcTime + offsetMillis
+    const utc8Now = new Date(utc8Time)
+
+    // 创建当前日期的MMDD格式
+    const currentMonth = utc8Now.getMonth() + 1
+    const currentDay = utc8Now.getDate()
+    const currentMMDD = `${currentMonth.toString().padStart(2, "0")}${currentDay.toString().padStart(2, "0")}`
+
+    // 如果请求的日期大于当前日期，返回false
+    if (dateStr > currentMMDD) {
+      return false
+    }
+
     const items = await getDevotionalItems()
     return !!items[dateStr]
   } catch (error) {

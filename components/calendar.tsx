@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { getUTC8DateOnly, isFutureDateUTC8, isTodayUTC8, formatDateMMDD } from "@/lib/date-utils"
 
 interface CalendarProps {
   month: number
@@ -13,9 +14,9 @@ export function Calendar({ month, year = new Date().getFullYear(), availableDate
   // 状态用于存储当前日期
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
 
-  // 在客户端初始化当前日期
+  // 在客户端初始化当前日期（使用UTC+8）
   useEffect(() => {
-    setCurrentDate(new Date())
+    setCurrentDate(getUTC8DateOnly())
   }, [])
 
   // 获取月份中的天数
@@ -40,25 +41,19 @@ export function Calendar({ month, year = new Date().getFullYear(), availableDate
   // 星期几标题
   const weekdays = ["日", "一", "二", "三", "四", "五", "六"]
 
-  // 检查日期是否在未来
+  // 检查日期是否在未来（使用UTC+8）
   const isFutureDate = (day: number) => {
-    if (!currentDate) return false
-
-    const dateToCheck = new Date(year, month - 1, day)
-    return dateToCheck > currentDate
+    return isFutureDateUTC8(year, month, day)
   }
 
-  // 检查日期是否是今天
+  // 检查日期是否是今天（使用UTC+8）
   const isToday = (day: number) => {
-    if (!currentDate) return false
-
-    const today = currentDate
-    return day === today.getDate() && month === today.getMonth() + 1 && year === today.getFullYear()
+    return isTodayUTC8(year, month, day)
   }
 
   // 格式化日期为MMDD格式
   const formatDate = (month: number, day: number) => {
-    return `${month.toString().padStart(2, "0")}${day.toString().padStart(2, "0")}`
+    return formatDateMMDD(month, day)
   }
 
   // 检查日期是否有内容可用

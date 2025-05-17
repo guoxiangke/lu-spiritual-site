@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { Calendar } from "@/components/calendar"
-import { BasicMonthSelector } from "@/components/basic-month-selector"
+import { ResponsiveMonthSelector } from "@/components/responsive-month-selector"
 import { getDevotionalItems } from "@/lib/get-devotional-items"
+import { AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export function YearCalendar() {
+export function YearCalendarOptimized() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1)
   const [availableDates, setAvailableDates] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -72,7 +73,7 @@ export function YearCalendar() {
     return (
       <div className="flex justify-center py-20">
         <div className="text-center">
-          <div className="h-12 w-12 text-destructive mx-auto mb-4">⚠️</div>
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
           <p className="mb-4 text-destructive">{error}</p>
           <Button onClick={handleRetry} variant="outline">
             重试
@@ -84,8 +85,7 @@ export function YearCalendar() {
 
   return (
     <div>
-      {/* 使用基础月份选择器，使用纯文本箭头 */}
-      <BasicMonthSelector currentMonth={currentMonth} onMonthChange={handleMonthChange} />
+      <ResponsiveMonthSelector currentMonth={currentMonth} onMonthChange={handleMonthChange} />
       <Calendar month={currentMonth} availableDates={availableDates} />
     </div>
   )

@@ -2,12 +2,16 @@
 
 import { useState, useEffect } from "react"
 import { Calendar } from "@/components/calendar"
-import { BasicMonthSelector } from "@/components/basic-month-selector"
+import { MonthSelectorEnhanced } from "@/components/month-selector-enhanced"
 import { getDevotionalItems } from "@/lib/get-devotional-items"
+import { AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { getUTC8Date } from "@/lib/date-utils"
 
-export function YearCalendar() {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1)
+export function YearCalendarFixed() {
+  // 使用UTC+8时间初始化当前月份
+  const utc8Now = getUTC8Date()
+  const [currentMonth, setCurrentMonth] = useState(utc8Now.getMonth() + 1)
   const [availableDates, setAvailableDates] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -72,7 +76,7 @@ export function YearCalendar() {
     return (
       <div className="flex justify-center py-20">
         <div className="text-center">
-          <div className="h-12 w-12 text-destructive mx-auto mb-4">⚠️</div>
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
           <p className="mb-4 text-destructive">{error}</p>
           <Button onClick={handleRetry} variant="outline">
             重试
@@ -84,8 +88,7 @@ export function YearCalendar() {
 
   return (
     <div>
-      {/* 使用基础月份选择器，使用纯文本箭头 */}
-      <BasicMonthSelector currentMonth={currentMonth} onMonthChange={handleMonthChange} />
+      <MonthSelectorEnhanced currentMonth={currentMonth} onMonthChange={handleMonthChange} />
       <Calendar month={currentMonth} availableDates={availableDates} />
     </div>
   )
