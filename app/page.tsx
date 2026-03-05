@@ -38,12 +38,12 @@ export default function Home() {
         </div>
       </header>
       <main className="container py-10">
-        <h2 className="mb-16 text-center text-3xl font-medium">2025卢牧师带你读新约</h2>
+        <h2 className="mb-16 text-center text-3xl font-medium">卢牧师带你读新约</h2>
         <YearCalendar />
       </main>
       <footer className="border-t py-6">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>灵修小站 &copy; {new Date().getFullYear()} - 2025卢牧师带你读新约</p>
+          <p>灵修小站 &copy; {new Date().getFullYear()} - 卢牧师带你读新约</p>
         </div>
       </footer>
     </div>

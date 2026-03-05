@@ -10,25 +10,27 @@ export async function GET() {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000) // 增加到10秒超时
 
-    // 从指定API获取数据
-    const response = await fetch("https://r2share.simai.life/luNT.json", {
-      cache: "no-store", // 不使用缓存
-      signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (Vercel Serverless Function)",
-      },
+    // 从本地JSON文件读取数据
+    const fs = await import('fs')
+    const path = await import('path')
+    
+    const filePath = path.join(process.cwd(), 'lu-nt-2025.json')
+    const fileContent = fs.readFileSync(filePath, 'utf8')
+    const jsonData = JSON.parse(fileContent)
+    
+    // 将数组格式转换为对象格式
+    const data: Record<string, any> = {}
+    
+    jsonData.forEach((item: any) => {
+      // 从标题中提取日期（前4个字符，如"0101"）
+      const dateKey = item.标题.substring(0, 4)
+      data[dateKey] = {
+        title: item.标题,
+        vid: item.vid,
+      }
     })
-
+    
     clearTimeout(timeoutId)
-
-    console.log("API响应状态:", response.status)
-
-    if (!response.ok) {
-      throw new Error(`API响应错误: ${response.status} ${response.statusText}`)
-    }
-
-    const data = await response.json()
     console.log("成功获取API数据")
 
     // 返回数据时添加CORS头

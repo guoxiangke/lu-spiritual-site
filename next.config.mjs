@@ -17,15 +17,6 @@ const nextConfig = {
       },
     ],
   },
-  // 添加API代理配置
-  async rewrites() {
-    return [
-      {
-        source: '/api-data',
-        destination: 'https://r2share.simai.life/luNT.json',
-      },
-    ]
-  },
 };
 
 export default nextConfig;

@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "灵修小站 - 2025卢牧师带你读新约",
-  description: "2025卢牧师带你读新约，每日灵修内容",
+  title: "灵修小站 - 卢牧师带你读新约",
+  description: "卢牧师带你读新约，每日灵修内容",
     generator: 'v0.dev'
 }
 
