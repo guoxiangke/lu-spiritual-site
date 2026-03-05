@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { getDevotionalDataFromFile } from "@/lib/server-data"
 
 export const dynamic = "force-dynamic" // 确保不缓存响应
 
@@ -11,24 +12,7 @@ export async function GET() {
     const timeoutId = setTimeout(() => controller.abort(), 10000) // 增加到10秒超时
 
     // 从本地JSON文件读取数据
-    const fs = await import('fs')
-    const path = await import('path')
-    
-    const filePath = path.join(process.cwd(), 'lu-nt-2025.json')
-    const fileContent = fs.readFileSync(filePath, 'utf8')
-    const jsonData = JSON.parse(fileContent)
-    
-    // 将数组格式转换为对象格式
-    const data: Record<string, any> = {}
-    
-    jsonData.forEach((item: any) => {
-      // 从标题中提取日期（前4个字符，如"0101"）
-      const dateKey = item.标题.substring(0, 4)
-      data[dateKey] = {
-        title: item.标题,
-        vid: item.vid,
-      }
-    })
+    const data = await getDevotionalDataFromFile()
     
     clearTimeout(timeoutId)
     console.log("成功获取API数据")

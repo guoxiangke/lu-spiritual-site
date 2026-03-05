@@ -9,9 +9,9 @@ import { getUTC8DateOnly, getCurrentDateMMDD } from "@/lib/date-utils"
 export default async function DayPage({
   params,
 }: {
-  params: { day: string }
+  params: Promise<{ day: string }>
 }) {
-  const dateStr = params.day
+  const { day: dateStr } = await params
 
   // 验证日期格式 (MMDD)
   if (!dateStr.match(/^(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/)) {

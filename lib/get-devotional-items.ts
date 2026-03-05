@@ -28,43 +28,14 @@ const fallbackData: DevotionalItems = {
   },
 }
 
-// 从本地JSON文件获取数据
-async function fetchFromLocalFile(): Promise<DevotionalItems> {
-  try {
-    console.log("从本地JSON文件获取数据")
-    const fs = await import('fs')
-    const path = await import('path')
-    
-    const filePath = path.join(process.cwd(), 'lu-nt-2025.json')
-    const fileContent = fs.readFileSync(filePath, 'utf8')
-    const jsonData = JSON.parse(fileContent)
-    
-    // 将数组格式转换为对象格式
-    const devotionalData: DevotionalItems = {}
-    
-    jsonData.forEach((item: any) => {
-      // 从标题中提取日期（前4个字符，如"0101"）
-      const dateKey = item.标题.substring(0, 4)
-      devotionalData[dateKey] = {
-        title: item.标题,
-        vid: item.vid,
-      }
-    })
-    
-    console.log("成功从本地文件获取数据")
-    return devotionalData
-  } catch (error) {
-    console.error("从本地文件获取数据失败:", error)
-    throw error
-  }
-}
 
 // 从API获取数据
 async function fetchDevotionalData(): Promise<DevotionalItems> {
   try {
     console.log("尝试从代理API获取数据")
-    // 使用我们的代理API端点
-    const response = await fetch("/api/devotional", {
+    // 在服务端使用完整URL，在客户端使用相对路径
+    const baseUrl = typeof window === 'undefined' ? 'http://localhost:3000' : ''
+    const response = await fetch(`${baseUrl}/api/devotional`, {
       cache: "no-store", // 不使用缓存
       headers: {
         "Content-Type": "application/json",
@@ -87,13 +58,9 @@ async function fetchDevotionalData(): Promise<DevotionalItems> {
   } catch (error) {
     console.error("从代理API获取数据失败:", error)
 
-    // 尝试从本地文件获取
-    try {
-      return await fetchFromLocalFile()
-    } catch (directError) {
-      console.error("所有获取方法都失败，使用备用数据")
-      return fallbackData
-    }
+    // 如果API失败，使用备用数据
+    console.error("所有获取方法都失败，使用备用数据")
+    return fallbackData
   }
 }
 
