@@ -1,8 +1,12 @@
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { YearCalendar } from "@/components/year-calendar"
+import { getDevotionalItems } from "@/lib/get-devotional-items"
 
-export default function Home() {
+export default async function Home() {
+  const items = await getDevotionalItems()
+  const availableDates = Object.keys(items)
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
@@ -39,7 +43,7 @@ export default function Home() {
       </header>
       <main className="container py-10">
         <h2 className="mb-16 text-center text-3xl font-medium">卢牧师带你读新约</h2>
-        <YearCalendar />
+        <YearCalendar availableDates={availableDates} />
       </main>
       <footer className="border-t py-6">
         <div className="container text-center text-sm text-muted-foreground">

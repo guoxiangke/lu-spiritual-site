@@ -29,37 +29,30 @@ const fallbackData: DevotionalItems = {
 }
 
 
-// 从API获取数据
+// 直接从外部URL获取数据（服务端和客户端均可用）
 async function fetchDevotionalData(): Promise<DevotionalItems> {
   try {
-    console.log("尝试从代理API获取数据")
-    // 在服务端使用完整URL，在客户端使用相对路径
-    const baseUrl = typeof window === 'undefined' ? 'http://localhost:3000' : ''
-    const response = await fetch(`${baseUrl}/api/devotional`, {
-      cache: "no-store", // 不使用缓存
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await fetch("https://r2.savefamily.net/lu-nt-2025.json", {
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000),
     })
 
     if (!response.ok) {
-      throw new Error(`代理API响应错误: ${response.status}`)
+      throw new Error(`API响应错误: ${response.status}`)
     }
 
-    const data = await response.json()
+    const jsonData = await response.json()
 
-    // 检查是否有错误字段
-    if (data.error) {
-      throw new Error(data.message || "API返回错误")
-    }
+    const data: DevotionalItems = {}
+    jsonData.forEach((item: any) => {
+      const dateKey = item.标题.substring(0, 4)
+      data[dateKey] = { title: item.标题, vid: item.vid }
+    })
 
-    console.log("成功从代理API获取数据")
+    console.log("成功获取数据")
     return data
   } catch (error) {
-    console.error("从代理API获取数据失败:", error)
-
-    // 如果API失败，使用备用数据
-    console.error("所有获取方法都失败，使用备用数据")
+    console.error("获取数据失败，使用备用数据:", error)
     return fallbackData
   }
 }
